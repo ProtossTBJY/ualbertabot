@@ -305,6 +305,7 @@ void WorkerManager::setMineralWorker(BWAPI::Unit unit)
 	else
 	{
 		//BWAPI::Broodwar->printf("No valid depot for mineral worker");
+		workerData.getMineralPatchesNearDepot(depot);
 	}
 }
 

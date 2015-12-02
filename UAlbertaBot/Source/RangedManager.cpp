@@ -9,7 +9,7 @@ RangedManager::RangedManager()
 
 void RangedManager::executeMicro(const BWAPI::Unitset & targets) 
 {
-	assignTargetsOld(targets);
+    assignTargetsOld(targets);
 }
 
 
@@ -17,36 +17,36 @@ void RangedManager::assignTargetsOld(const BWAPI::Unitset & targets)
 {
     const BWAPI::Unitset & rangedUnits = getUnits();
 
-	// figure out targets
-	BWAPI::Unitset rangedUnitTargets;
+    // figure out targets
+    BWAPI::Unitset rangedUnitTargets;
     std::copy_if(targets.begin(), targets.end(), std::inserter(rangedUnitTargets, rangedUnitTargets.end()), [](BWAPI::Unit u){ return u->isVisible(); });
 
     for (auto & rangedUnit : rangedUnits)
-	{
-		// train sub units such as scarabs or interceptors
-		//trainSubUnits(rangedUnit);
+    {
+        // train sub units such as scarabs or interceptors
+        //trainSubUnits(rangedUnit);
 
-		// if the order is to attack or defend
-		if (order.getType() == SquadOrderTypes::Attack || order.getType() == SquadOrderTypes::Defend) 
+        // if the order is to attack or defend
+        if (order.getType() == SquadOrderTypes::Attack || order.getType() == SquadOrderTypes::Defend) 
         {
-			// if there are targets
-			if (!rangedUnitTargets.empty())
-			{
-				// find the best target for this zealot
-				BWAPI::Unit target = getTarget(rangedUnit, rangedUnitTargets);
+            // if there are targets
+            if (!rangedUnitTargets.empty())
+            {
+                // find the best target for this zealot
+                BWAPI::Unit target = getTarget(rangedUnit, rangedUnitTargets);
                 
                 if (target && Config::Debug::DrawUnitTargetInfo) 
-	            {
-		            BWAPI::Broodwar->drawLineMap(rangedUnit->getPosition(), rangedUnit->getTargetPosition(), BWAPI::Colors::Purple);
-	            }
+                {
+                    BWAPI::Broodwar->drawLineMap(rangedUnit->getPosition(), rangedUnit->getTargetPosition(), BWAPI::Colors::Purple);
+                }
 
 
-				// attack it
+                // attack it
                 if (Config::Micro::KiteWithRangedUnits)
                 {
                     if (rangedUnit->getType() == BWAPI::UnitTypes::Zerg_Mutalisk || rangedUnit->getType() == BWAPI::UnitTypes::Terran_Vulture)
                     {
-				        Micro::MutaDanceTarget(rangedUnit, target);
+                        Micro::MutaDanceTarget(rangedUnit, target);
                     }
                     else
                     {
@@ -57,19 +57,19 @@ void RangedManager::assignTargetsOld(const BWAPI::Unitset & targets)
                 {
                     Micro::SmartAttackUnit(rangedUnit, target);
                 }
-			}
-			// if there are no targets
-			else
-			{
-				// if we're not near the order position
-				if (rangedUnit->getDistance(order.getPosition()) > 100)
-				{
-					// move to it
-					Micro::SmartAttackMove(rangedUnit, order.getPosition());
-				}
-			}
-		}
-	}
+            }
+            // if there are no targets
+            else
+            {
+                // if we're not near the order position
+                if (rangedUnit->getDistance(order.getPosition()) > 100)
+                {
+                    // move to it
+                    Micro::SmartAttackMove(rangedUnit, order.getPosition());
+                }
+            }
+        }
+    }
 }
 
 std::pair<BWAPI::Unit, BWAPI::Unit> RangedManager::findClosestUnitPair(const BWAPI::Unitset & attackers, const BWAPI::Unitset & targets)
@@ -96,33 +96,36 @@ std::pair<BWAPI::Unit, BWAPI::Unit> RangedManager::findClosestUnitPair(const BWA
 // get a target for the zealot to attack
 BWAPI::Unit RangedManager::getTarget(BWAPI::Unit rangedUnit, const BWAPI::Unitset & targets)
 {
-	BWAPI::Unit chosenTarget= nullptr;
-	int highPriority = 0;
-	int lowest_hp = std::numeric_limits<int>::infinity();
-	double bestLTD = 0;
-	
-	for(const auto & target : targets){
-		int hp = target->getHitPoints();
-		double LTD = UnitUtil::CalculateLTD(target, rangedUnit);
-		int priority            = getAttackPriority(rangedUnit, target);
+    BWAPI::Unit chosenTarget= nullptr;
+    int highPriority = 0;
+    int lowest_hp = std::numeric_limits<int>::infinity();
+    double bestLTD = 0;
+    
+    for(const auto & target : targets){
+        int hp = target->getHitPoints();
+        double LTD = UnitUtil::CalculateLTD(target, rangedUnit);
+        int priority            = getAttackPriority(rangedUnit, target);
         bool targetIsThreat     = LTD > 0;
-		if (!chosenTarget || (priority > highPriority) || (priority == highPriority && hp < lowest_hp))
-		{
-			lowest_hp = hp;
-			highPriority = priority;
-			chosenTarget = target;
-		}       
-	}
-   // BWAPI::Broodwar->printf("%d",lowest_hp);
-	return chosenTarget;
+        if (!chosenTarget || (priority > highPriority) || (priority == highPriority && hp < lowest_hp))
+        {
+            lowest_hp = hp;
+            highPriority = priority;
+            chosenTarget = target;
+        }       
+    }
+    //BWAPI::Broodwar->printf("%d",lowest_hp);
+    return chosenTarget;
 }
 
-	// get the attack priority of a type in relation to a zergling
-int RangedManager::getAttackPriority(BWAPI::Unit rangedUnit, BWAPI::Unit target) 
+    // get the attack priority of a type in relation to a zergling
+int RangedManager::getAttackPriority(BWAPI::Unit rangedUnit, BWAPI::Unit target)
 {
-	BWAPI::UnitType rangedType = rangedUnit->getType();
-	BWAPI::UnitType targetType = target->getType();
+    BWAPI::UnitType rangedType = rangedUnit->getType();
+    BWAPI::UnitType targetType = target->getType();
 
+    if (target->getType() == BWAPI::UnitTypes::Terran_Science_Vessel || target->getType() == BWAPI::UnitTypes::Zerg_Overlord || target->getType() == BWAPI::UnitTypes::Protoss_Observer)
+        return 80;
+    // Remove Flying Detectors
     
     if (rangedUnit->getType() == BWAPI::UnitTypes::Zerg_Scourge)
     {
@@ -138,7 +141,7 @@ int RangedManager::getAttackPriority(BWAPI::Unit rangedUnit, BWAPI::Unit target)
         }
     }
 
-	bool isThreat = rangedType.isFlyer() ? targetType.airWeapon() != BWAPI::WeaponTypes::None : targetType.groundWeapon() != BWAPI::WeaponTypes::None;
+    bool isThreat = rangedType.isFlyer() ? targetType.airWeapon() != BWAPI::WeaponTypes::None : targetType.groundWeapon() != BWAPI::WeaponTypes::None;
 
     if (target->getType().isWorker())
     {
@@ -167,63 +170,65 @@ int RangedManager::getAttackPriority(BWAPI::Unit rangedUnit, BWAPI::Unit target)
         return 90;
     }
     
-	// highest priority is something that can attack us or aid in combat
+    // highest priority is something that can attack us or aid in combat
     if (targetType ==  BWAPI::UnitTypes::Terran_Bunker || isThreat)
     {
         return 11;
     }
-	// next priority is worker
-	else if (targetType.isWorker()) 
-	{
+    // next priority is worker
+    else if (targetType.isWorker())
+    {
         if (rangedUnit->getType() == BWAPI::UnitTypes::Terran_Vulture)
         {
             return 11;
         }
 
-  		return 11;
-	}
+        return 11;
+    }
     // next is special buildings
-	else if (targetType == BWAPI::UnitTypes::Zerg_Spawning_Pool)
-	{
-		return 5;
-	}
-	// next is special buildings
-	else if (targetType == BWAPI::UnitTypes::Protoss_Pylon)
-	{
-		return 5;
-	}
-	// next is buildings that cost gas
-	else if (targetType.gasPrice() > 0)
-	{
-		return 4;
-	}
-	else if (targetType.mineralPrice() > 0)
-	{
-		return 3;
-	}
-	// then everything else
-	else
-	{
-		return 1;
-	}
+    else if (targetType == BWAPI::UnitTypes::Terran_Comsat_Station)
+        return 8;
+    else if (targetType == BWAPI::UnitTypes::Zerg_Spawning_Pool)
+    {
+        return 5;
+    }
+    // next is special buildings
+    else if (targetType == BWAPI::UnitTypes::Protoss_Pylon)
+    {
+        return 5;
+    }
+    // next is buildings that cost gas
+    else if (targetType.gasPrice() > 0)
+    {
+        return 4;
+    }
+    else if (targetType.mineralPrice() > 0)
+    {
+        return 3;
+    }
+    // then everything else
+    else
+    {
+        return 1;
+    }
 }
 
 BWAPI::Unit RangedManager::closestrangedUnit(BWAPI::Unit target, std::set<BWAPI::Unit> & rangedUnitsToAssign)
 {
-	double minDistance = 0;
-	BWAPI::Unit closest = nullptr;
+    double minDistance = 0;
+    BWAPI::Unit closest = nullptr;
 
-	for (auto & rangedUnit : rangedUnitsToAssign)
-	{
-		double distance = rangedUnit->getDistance(target);
-		if (!closest || distance < minDistance)
-		{
-			minDistance = distance;
-			closest = rangedUnit;
-		}
-	}
-	
-	return closest;
+    for (auto & rangedUnit : rangedUnitsToAssign)
+    {
+        double distance = rangedUnit->getDistance(target);
+        if (!closest || distance < minDistance)
+        {
+            minDistance = distance;
+            closest = rangedUnit;
+        }
+    }
+    
+    return closest;
 }
 
 
@@ -232,8 +237,8 @@ void RangedManager::assignTargetsNew(const BWAPI::Unitset & targets)
 {
     const BWAPI::Unitset & rangedUnits = getUnits();
 
-	// figure out targets
-	BWAPI::Unitset rangedUnitTargets;
+    // figure out targets
+    BWAPI::Unitset rangedUnitTargets;
     std::copy_if(targets.begin(), targets.end(), std::inserter(rangedUnitTargets, rangedUnitTargets.end()), [](BWAPI::Unit u){ return u->isVisible(); });
 
     BWAPI::Unitset rangedUnitsToAssign(rangedUnits);
@@ -268,7 +273,7 @@ void RangedManager::assignTargetsNew(const BWAPI::Unitset & targets)
         {
             if (attacker->getType() == BWAPI::UnitTypes::Zerg_Mutalisk || attacker->getType() == BWAPI::UnitTypes::Terran_Vulture)
             {
-			    Micro::MutaDanceTarget(attacker, target);
+                Micro::MutaDanceTarget(attacker, target);
             }
             else
             {
@@ -303,11 +308,11 @@ void RangedManager::assignTargetsNew(const BWAPI::Unitset & targets)
     {
         for (auto & unit : rangedUnitsToAssign)    
         {
-			if (unit->getDistance(order.getPosition()) > 100)
-			{
-				// move to it
-				Micro::SmartAttackMove(unit, order.getPosition());
-			}
+            if (unit->getDistance(order.getPosition()) > 100)
+            {
+                // move to it
+                Micro::SmartAttackMove(unit, order.getPosition());
+            }
         }
     }
 }

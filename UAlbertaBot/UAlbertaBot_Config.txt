@@ -8,7 +8,7 @@
         
     "BWAPI" : 
     {
-        "SetLocalSpeed"             : 7,
+        "SetLocalSpeed"             : 5,
         "SetFrameSkip"              : 0,
         "UserInput"                 : true,
         "CompleteMapInformation"    : false
@@ -44,7 +44,7 @@
         "DrawUnitHealthBars"        : true,
         "DrawProductionInfo"        : true, 
         "DrawBuildOrderSearchInfo"  : false,
-        "DrawScoutInfo"             : true,
+        "DrawScoutInfo"             : false,
         "DrawEnemyUnitInfo"         : false,
         "DrawModuleTimers"          : false,
         "DrawResourceInfo"          : false,
@@ -102,8 +102,9 @@
             "Protoss_DragoonRush"   : { "Race" : "Protoss", "OpeningBuildOrder" : ["Probe", "Probe", "Probe", "Probe", "Pylon", "Probe", "Probe", "Gateway", "Probe", "Assimilator", "Probe", "Probe", "Cybernetics_Core", "Probe", "Probe", "Gateway", "Singularity_Charge", "Dragoon", "Gateway", "Pylon", "Dragoon", "Dragoon", "Probe", "Gateway", "Pylon", "Probe", "Dragoon", "Dragoon", "Dragoon"]},
             "Protoss_DTRush"        : { "Race" : "Protoss", "OpeningBuildOrder" : ["Probe", "Probe", "Probe", "Probe", "Pylon", "Probe", "Gateway", "Probe", "Assimilator", "Probe", "Cybernetics_Core", "Probe", "Citadel_of_Adun", "Probe", "Templar_Archives", "Gateway", "Dark_Templar", "Dark_Templar", "Pylon", "Dark_Templar", "Dark_Templar", "Probe", "Pylon", "Probe" ]},
             "Protoss_Drop"          : { "Race" : "Protoss", "OpeningBuildOrder" : ["Probe", "Probe", "Probe", "Probe", "Pylon", "Probe", "Probe", "Gateway", "Probe", "Assimilator", "Probe", "Probe", "Cybernetics_Core", "Probe", "Gateway", "Robotics Facility"]},
-			"ProtossTBJY"          : { "Race" : "Protoss", "OpeningBuildOrder" : ["Probe", "Probe", "Probe", "Probe", "Pylon", "Probe", "Forge","Pylon","Photon_Cannon", "Photon_Cannon", "Probe", "Probe" ,"Gateway", "Gateway","Photon_Cannon", "Zealot", "Zealot", "Zealot", "Zealot","Pylon", "Probe", "Probe", "Assimilator","Pylon",  "Photon_Cannon", "Zealot", "Zealot",  "Probe",  "Photon_Cannon", "Cybernetics_Core"]},
-			"ProtossTBJY2"           : { "Race" : "Protoss", "OpeningBuildOrder" : ["Probe", "Probe", "Probe", "Probe", "Pylon", "Probe", "Gateway", "Gateway", "Probe", "Probe", "Zealot", "Pylon", "Zealot", "Zealot"]},
+            "ProtossTBJY"           : { "Race" : "Protoss", "OpeningBuildOrder" : ["Probe", "Probe", "Probe", "Probe", "Pylon", "Probe", "Forge","Pylon","Photon_Cannon", "Photon_Cannon", "Probe", "Probe", "Gateway", "Gateway","Photon_Cannon", "Zealot", "Zealot", "Zealot", "Zealot","Pylon", "Probe", "Probe", "Assimilator","Pylon",  "Photon_Cannon", "Zealot", "Zealot",  "Probe",  "Photon_Cannon", "Cybernetics_Core", "Zealot", "Zealot", "Stargate", "Citadel_of_Adun", "Singularity_Charge", "Dragoon", "Dragoon", "Leg_Enhancements"]},
+            "ProtossTBJY3"          : { "Race" : "Protoss", "OpeningBuildOrder" : ["Probe", "Probe", "Probe", "Probe", "Pylon", "Probe", "Forge","Pylon","Photon_Cannon", "Photon_Cannon", "Probe", "Probe" ,"Gateway", "Gateway","Photon_Cannon", "Zealot", "Zealot", "Zealot", "Zealot","Pylon", "Probe", "Probe", "Assimilator","Pylon",  "Photon_Cannon", "Zealot", "Zealot",  "Probe",  "Photon_Cannon", "Cybernetics_Core"]},
+            "ProtossTBJY2"          : { "Race" : "Protoss", "OpeningBuildOrder" : ["Probe", "Probe", "Probe", "Probe", "Pylon", "Probe", "Gateway", "Gateway", "Probe", "Probe", "Zealot", "Pylon", "Zealot", "Zealot"]},
             "Terran_MarineRush"     : { "Race" : "Terran",  "OpeningBuildOrder" : ["SCV", "SCV", "SCV", "SCV", "SCV", "Supply Depot", "SCV"]},
             "Terran_TankPush"       : { "Race" : "Terran",  "OpeningBuildOrder" : ["SCV", "SCV", "SCV", "SCV", "SCV", "Supply Depot", "SCV", "Barracks", "Refinery", "SCV", "SCV", "SCV", "SCV", "Factory", "Factory", "SCV", "SCV", "SCV", "SCV", "Machine Shop", "Machine Shop", "Supply Depot", "Tank Siege Mode", "Siege Tank Tank Mode", "Siege Tank Tank Mode", "Siege Tank Tank Mode", "Siege Tank Tank Mode"]},
             "Terran_4RaxMarines"    : { "Race" : "Terran",  "OpeningBuildOrder" : ["Barracks", "SCV", "SCV", "Marine", "SCV", "Marine", "Supply Depot", "Marine", "Marine", "Marine", "Marine", "Marine", "Marine"]},

@@ -190,6 +190,8 @@ int MeleeManager::getAttackPriority(BWAPI::Unit attacker, BWAPI::Unit unit)
 		return 9;
 	}
     // next is special buildings
+	else if (type == BWAPI::UnitTypes::Terran_Comsat_Station)
+		return 5;
 	else if (type == BWAPI::UnitTypes::Zerg_Spawning_Pool)
 	{
 		return 5;
