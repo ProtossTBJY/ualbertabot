@@ -1,7 +1,7 @@
 #include "Common.h"
 #include "WorkerManager.h"
 #include "Micro.h"
-
+#include "ProductionManager.h"
 using namespace UAlbertaBot;
 
 WorkerManager::WorkerManager() 
@@ -304,7 +304,40 @@ void WorkerManager::setMineralWorker(BWAPI::Unit unit)
 	}
 	else
 	{
-		// BWAPI::Broodwar->printf("No valid depot for mineral worker");
+		BWAPI::Broodwar->printf("No valid depot for mineral worker");
+
+		std::set<BWTA::BaseLocation*> baseLocations = BWTA::getBaseLocations();
+
+		int dist_to_enemy_base = 1000000;
+
+		BWTA::BaseLocation* enemyBase = InformationManager::Instance().getMainBaseLocation(BWAPI::Broodwar->enemy());
+
+		BWTA::BaseLocation* bestBase;
+
+		for (auto &base : baseLocations){
+
+			if (base == InformationManager::Instance().getMainBaseLocation(BWAPI::Broodwar->enemy())){
+				//BWAPI::Broodwar->printf("I AM THE ENEMENY BASE");
+				enemyBase = base;
+
+			}
+			else{
+				//BWAPI::Broodwar->printf("I AM THE WALRUS");
+				if (enemyBase->getPosition().getApproxDistance(base->getPosition())<dist_to_enemy_base){
+
+					dist_to_enemy_base = enemyBase->getPosition().getApproxDistance(base->getPosition());
+					bestBase = base;
+
+				}
+
+			}
+
+
+		}//end for loop
+
+
+
+		BuildingManager::Instance().addBuildingTask(BWAPI::UnitTypes::Protoss_Nexus,bestBase->getTilePosition(),false);
 	}
 }
 

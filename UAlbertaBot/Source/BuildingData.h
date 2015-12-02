@@ -25,6 +25,7 @@ public:
     bool                    isGasSteal;
 	bool                    buildCommandGiven;
 	bool                    underConstruction;
+	bool					isPhotonPylon;
 
 	Building() 
 		: desiredPosition   (0,0)
@@ -38,6 +39,7 @@ public:
         , buildCommandGiven (false)
         , underConstruction (false) 
         , isGasSteal        (false)
+		, isPhotonPylon		(false)
     {} 
 
 	// constructor we use most often
@@ -53,6 +55,7 @@ public:
         , buildCommandGiven (false)
         , underConstruction (false) 
         , isGasSteal        (false)
+		, isPhotonPylon(false)
     {}
 
 	// equals operator

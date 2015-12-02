@@ -12,12 +12,13 @@ struct BuildOrderItem
     int					priority;	// the priority at which to place it in the queue
     bool				blocking;	// whether or not we block further items
     bool                isGasSteal;
-
+	bool				isPhotonPylon;
     BuildOrderItem(MetaType m,int p,bool b,bool gasSteal = false)
         : metaType(m)
         , priority(p)
         , blocking(b)
         , isGasSteal(gasSteal) 
+		, isPhotonPylon(false)
     {
     }
 

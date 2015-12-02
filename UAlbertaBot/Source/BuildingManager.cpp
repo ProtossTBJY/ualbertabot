@@ -2,6 +2,7 @@
 #include "BuildingManager.h"
 #include "Micro.h"
 #include "ScoutManager.h"
+#include <BWAPI/Constants.h>
 
 using namespace UAlbertaBot;
 
@@ -281,12 +282,15 @@ bool BuildingManager::isEvolvedBuilding(BWAPI::UnitType type)
 void BuildingManager::addBuildingTask(BWAPI::UnitType type, BWAPI::TilePosition desiredLocation, bool isGasSteal)
 {
 
+	pylonAmount = BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Protoss_Pylon);
+
 	_reservedMinerals += type.mineralPrice();
 	_reservedGas += type.gasPrice();
 
 	Building b(type, desiredLocation);
 	b.isGasSteal = isGasSteal;
 	b.status = BuildingStatus::Unassigned;
+
 
 	_buildings.push_back(b);
 }
@@ -435,6 +439,32 @@ BWAPI::TilePosition BuildingManager::getBuildingLocation(const Building & b)
     {
         distance = Config::Macro::PylonSpacing;
     }
+
+	
+	/*if (b.isPhotonPylon){
+
+		BWTA::BaseLocation* base = BWTA::getNearestBaseLocation(b.desiredPosition);
+		
+		BWTA::Chokepoint* choke = BWTA::getNearestChokepoint(base->getTilePosition());
+
+		int xDirection = b.desiredPosition.x - base->getTilePosition().x < 0 ? 1 : -1;
+		int yDirection = b.desiredPosition.y - base->getTilePosition().y < 0 ? 1 : -1;
+
+		int newX = xDirection * (base->getTilePosition().x - choke->getCenter().x) / 2;
+		int newY = yDirection * (base->getTilePosition().x - choke->getCenter().x) / 2; 
+
+		BWAPI::TilePosition inbetween = BWAPI::TilePosition(newX,newY);
+
+		Building c(b.type , inbetween);
+		c.buildCommandGiven = b.buildCommandGiven;
+		c.builderUnit = b.builderUnit;
+		c.buildingUnit = c.buildingUnit;
+		c.isGasSteal = b.isGasSteal;
+		c.isPhotonPylon = true;
+		c.lastOrderFrame = b.lastOrderFrame;
+		c.underConstruction = b.underConstruction;
+		return BuildingPlacer::Instance().getBuildLocationNear(c,distance,false);
+	}*/
 
     // get a position within our region
     return BuildingPlacer::Instance().getBuildLocationNear(b,distance,false);

@@ -79,9 +79,6 @@ void ScoutManager::moveScouts()
     
     gasSteal();
 
-
-	stealEnemyExpansion();
-
 	// get the enemy base location, if we have one
 	BWTA::BaseLocation * enemyBaseLocation = InformationManager::Instance().getMainBaseLocation(BWAPI::Broodwar->enemy());
 
@@ -102,6 +99,8 @@ void ScoutManager::moveScouts()
     else if (_didGasSteal && finishedConstructingGasSteal)
     {
         _gasStealFinished = true;
+		//Micro::SmartMove(_workerScout, stealEnemyExpansion());
+
     }
     
 	// if we know where the enemy region is and where our scout is
@@ -243,7 +242,6 @@ void ScoutManager::gasSteal()
     {
         ProductionManager::Instance().queueGasSteal();
         _didGasSteal = true;
-        Micro::SmartMove(_workerScout, stealEnemyExpansion());
         _gasStealStatus = "Did Gas Steal";
     }
 }
@@ -556,11 +554,6 @@ BWAPI::Position ScoutManager::stealEnemyExpansion(){
 		
 		return BWAPI::Position(0,0);
 	}
-	_didExpansion = true;
-	BWAPI::Position scoutLocation = _workerScout->getPosition();
-
-	BWTA::Region* enemyBaseRegion = BWTA::getRegion(scoutLocation.x, scoutLocation.y);
-
 	std::set<BWTA::BaseLocation*> baseLocations = BWTA::getBaseLocations();
 
 	int dist_to_enemy_base = 1000000;
@@ -572,12 +565,12 @@ BWAPI::Position ScoutManager::stealEnemyExpansion(){
 	for (auto &base : baseLocations){
 	
 		if (base == InformationManager::Instance().getMainBaseLocation(BWAPI::Broodwar->enemy())){
-			BWAPI::Broodwar->printf("I AM THE ENEMENY BASE");
+			//BWAPI::Broodwar->printf("I AM THE ENEMENY BASE");
 			enemyBase = base;
 		
 		}
 		else{
-			BWAPI::Broodwar->printf("I AM THE WALRUS");
+			//BWAPI::Broodwar->printf("I AM THE WALRUS");
 			if (enemyBase->getPosition().getApproxDistance(base->getPosition())<dist_to_enemy_base){
 
 				dist_to_enemy_base = enemyBase->getPosition().getApproxDistance(base->getPosition());
@@ -589,7 +582,7 @@ BWAPI::Position ScoutManager::stealEnemyExpansion(){
 	
 	
 	}//end for loop
-	return  BWAPI::Position(bestBase->getTilePosition());
+	return  bestBase->getPosition();
 	//Micro::SmartMove(_workerScout, BWAPI::Position(bestBase->getTilePosition()));
 
 }

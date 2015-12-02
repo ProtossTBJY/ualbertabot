@@ -69,6 +69,21 @@ bool BuildingPlacer::canBuildHere(BWAPI::TilePosition position,const Building & 
     {
     return false;
     }*/
+	int numPylons = BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Protoss_Pylon);
+	if (numPylons == 1 && b.type == BWAPI::UnitTypes::Protoss_Pylon){
+	
+		const std::vector<BWAPI::TilePosition> & closestToBuilding = MapTools::Instance().getClosestTilesTo(BWAPI::Position(b.desiredPosition));
+		for (size_t i(0); i < closestToBuilding.size(); ++i){
+
+			if (!BWAPI::Broodwar->canBuildHere(closestToBuilding[i], b.type, b.builderUnit)){
+			
+				return true;
+			
+			}
+
+		}
+	
+	}
 
     //returns true if we can build this type of unit here. Takes into account reserved tiles.
     if (!BWAPI::Broodwar->canBuildHere(position,b.type,b.builderUnit))
@@ -217,6 +232,10 @@ BWAPI::TilePosition BuildingPlacer::getBuildLocationNear(const Building & b,int 
     {
         if (canBuildHereWithSpace(closestToBuilding[i],b,buildDist,horizontalOnly))
         {
+			if (numPylons == 1 && b.type == BWAPI::UnitTypes::Protoss_Pylon){
+			
+				//BWAPI::Broodwar->printf("SUP");
+			}
             double ms = t.getElapsedTimeInMilliSec();
             //BWAPI::Broodwar->printf("Building Placer Took %d iterations, lasting %lf ms @ %lf iterations/ms, %lf setup ms", i, ms, (i / ms), ms1);
 
