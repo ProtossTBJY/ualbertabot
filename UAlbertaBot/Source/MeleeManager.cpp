@@ -149,7 +149,7 @@ BWAPI::Unit MeleeManager::getTarget(BWAPI::Unit meleeUnit, const BWAPI::Unitset 
 			}
 		}
 	}
-	BWAPI::Broodwar->printf("%d", weakestClosest->getHitPoints());
+	//BWAPI::Broodwar->printf("%d", weakestClosest->getHitPoints());
 	return weakestClosest;
 }
 

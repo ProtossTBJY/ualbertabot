@@ -113,7 +113,7 @@ BWAPI::Unit RangedManager::getTarget(BWAPI::Unit rangedUnit, const BWAPI::Unitse
 			chosenTarget = target;
 		}       
 	}
-    BWAPI::Broodwar->printf("%d",lowest_hp);
+   // BWAPI::Broodwar->printf("%d",lowest_hp);
 	return chosenTarget;
 }
 

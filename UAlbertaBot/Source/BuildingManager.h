@@ -18,6 +18,9 @@ class BuildingManager
     int             _reservedMinerals;				// minerals reserved for planned buildings
     int             _reservedGas;					// gas reserved for planned buildings
 
+	std::vector <Building> PhotonPylons;
+	BWAPI::TilePosition PhotonLocationFinder(BWAPI::TilePosition Pylon, BWAPI::TilePosition ChokePoint);
+
     bool            isEvolvedBuilding(BWAPI::UnitType type);
     bool            isBuildingPositionExplored(const Building & b) const;
     void            removeBuildings(const std::vector<Building> & toRemove);
@@ -28,6 +31,7 @@ class BuildingManager
     void            checkForStartedConstruction();			// STEP 4
     void            checkForDeadTerranBuilders();			// STEP 5
     void            checkForCompletedBuildings();			// STEP 6
+	BWAPI::Position getClosesetBaseToEnemy();
 
     char            getBuildingWorkerCode(const Building & b) const;
     

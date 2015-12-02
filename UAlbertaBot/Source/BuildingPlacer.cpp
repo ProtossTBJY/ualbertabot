@@ -207,6 +207,8 @@ bool BuildingPlacer::canBuildHereWithSpace(BWAPI::TilePosition position,const Bu
 
 BWAPI::TilePosition BuildingPlacer::GetBuildLocation(const Building & b,int padding) const
 {
+	
+
     return BWAPI::TilePosition(0,0);
 }
 

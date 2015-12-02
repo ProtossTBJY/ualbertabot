@@ -343,13 +343,10 @@ void ProductionManager::create(BWAPI::Unit producer, BuildOrderItem & item)
         && t.getUnitType() != BWAPI::UnitTypes::Zerg_Greater_Spire
         && !t.getUnitType().isAddon())
     {
-
 		BWAPI::TilePosition location = BWAPI::Broodwar->self()->getStartLocation();
-		
-
-        // send the building task to the building manager
-        BuildingManager::Instance().addBuildingTask(t.getUnitType(), location, item.isGasSteal);
+		BuildingManager::Instance().addBuildingTask(t.getUnitType(), location, item.isGasSteal);
     }
+
     else if (t.getUnitType().isAddon())
     {
         //BWAPI::TilePosition addonPosition(producer->getTilePosition().x + producer->getType().tileWidth(), producer->getTilePosition().y + producer->getType().tileHeight() - t.unitType.tileHeight());
