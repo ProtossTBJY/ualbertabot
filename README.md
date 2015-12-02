@@ -6,8 +6,11 @@ Please check out the [Wiki](https://github.com/davechurchill/ualbertabot/wiki) f
 
 Please consider the code in this repository as unstable research code. Stable releases can be found in the [stable release section](https://github.com/davechurchill/ualbertabot/tree/master/binary_stable_releases). Note that the instructions included in the wiki may not be correct for older binary releases.
 
-Modified Files:
+#Modified Files:
+
 MeleeManger.cpp:
+
     getTarget() function changed, moveToFront() function added
 RangedManager.cpp:
+
     getTarget() function changed
