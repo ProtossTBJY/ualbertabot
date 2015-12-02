@@ -31,6 +31,7 @@ class ScoutManager
 	void                            moveScouts();
     void                            drawScoutInformation(int x, int y);
     void                            calculateEnemyRegionVertices();
+	BWAPI::Unit			ClosestAttackingEnemy(BWAPI::Position unitPosition);
 	BWAPI::Position					stealEnemyExpansion();
 
 	ScoutManager();

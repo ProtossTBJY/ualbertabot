@@ -160,8 +160,10 @@ void ProductionManager::manageBuildOrderQueue()
 		// if the next item in the list is a building and we can't yet make it
         if (currentItem.metaType.isBuilding() && !(producer && canMake) && currentItem.metaType.whatBuilds().isWorker())
 		{
-			// construct a temporary building object
-			Building b(currentItem.metaType.getUnitType(), BWAPI::Broodwar->self()->getStartLocation());
+
+			BWAPI::TilePosition location = BWAPI::Broodwar->self()->getStartLocation();
+
+			Building b(currentItem.metaType.getUnitType(),location);
             b.isGasSteal = currentItem.isGasSteal;
 
 			// set the producer as the closest worker, but do not set its job yet
@@ -341,9 +343,10 @@ void ProductionManager::create(BWAPI::Unit producer, BuildOrderItem & item)
         && t.getUnitType() != BWAPI::UnitTypes::Zerg_Greater_Spire
         && !t.getUnitType().isAddon())
     {
-        // send the building task to the building manager
-        BuildingManager::Instance().addBuildingTask(t.getUnitType(), BWAPI::Broodwar->self()->getStartLocation(), item.isGasSteal);
+		BWAPI::TilePosition location = BWAPI::Broodwar->self()->getStartLocation();
+		BuildingManager::Instance().addBuildingTask(t.getUnitType(), location, item.isGasSteal);
     }
+
     else if (t.getUnitType().isAddon())
     {
         //BWAPI::TilePosition addonPosition(producer->getTilePosition().x + producer->getType().tileWidth(), producer->getTilePosition().y + producer->getType().tileHeight() - t.unitType.tileHeight());

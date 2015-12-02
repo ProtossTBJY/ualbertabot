@@ -2,6 +2,7 @@
 #include "BuildingManager.h"
 #include "Micro.h"
 #include "ScoutManager.h"
+#include <BWAPI/Constants.h>
 
 using namespace UAlbertaBot;
 
@@ -281,12 +282,20 @@ bool BuildingManager::isEvolvedBuilding(BWAPI::UnitType type)
 void BuildingManager::addBuildingTask(BWAPI::UnitType type, BWAPI::TilePosition desiredLocation, bool isGasSteal)
 {
 
+	pylonAmount = BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Protoss_Pylon);
+
 	_reservedMinerals += type.mineralPrice();
 	_reservedGas += type.gasPrice();
 
 	Building b(type, desiredLocation);
+	if (b.type == BWAPI::UnitTypes::Protoss_Pylon && pylonAmount ==1){
+	
+		b.isPhotonPylon = true;
+	
+	}
 	b.isGasSteal = isGasSteal;
 	b.status = BuildingStatus::Unassigned;
+
 
 	_buildings.push_back(b);
 }
@@ -398,6 +407,67 @@ BWAPI::TilePosition BuildingManager::getBuildingLocation(const Building & b)
 {
     int numPylons = BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Protoss_Pylon);
 
+	if (b.isPhotonPylon){
+
+		PhotonPylons.push_back(b);
+
+		BWTA::BaseLocation* base = InformationManager::Instance().getMainBaseLocation(BWAPI::Broodwar->self());
+		BWTA::Chokepoint* choke = BWTA::getNearestChokepoint(base->getTilePosition());
+
+		int newX;
+		if (base->getPosition().x > choke->getCenter().x){
+
+			newX = base->getPosition().x - ((base->getPosition().x - choke->getCenter().x) / 2);
+
+		}
+
+		else{
+
+			newX = base->getPosition().x - ((base->getPosition().x - choke->getCenter().x) / 2);
+		}
+
+
+		int newY;
+
+		if (base->getPosition().y > choke->getCenter().y){
+
+			newY = base->getPosition().y - ((base->getPosition().y - choke->getCenter().y) / 2);
+
+		}
+
+		else{
+
+			newY = base->getPosition().y - ((base->getPosition().y - choke->getCenter().y) / 2);
+		}
+
+		//BWAPI::Broodwar->printf("newX: %d newY:%d", newX, newY);
+		//have to divide by tile size because it wasnt changing it.
+		BWAPI::TilePosition inbetween = BWAPI::TilePosition(newX / TILE_SIZE, newY / TILE_SIZE);
+
+		//BWAPI::Broodwar->printf("old pos x: %d y : %d", b.desiredPosition.x, b.desiredPosition.y);
+		//BWAPI::Broodwar->printf("new pos x: %d y : %d", inbetween.x, inbetween.y);
+
+
+
+		//int dist = MapTools::Instance().getGroundDistance(base->getPosition(), choke->getCenter());
+		//BWAPI::Broodwar->printf("distance found: %d", dist);
+		//bool connect = BWTA::isConnected(base->getTilePosition(), BWAPI::TilePosition(choke->getCenter()));
+		//BWAPI::Broodwar->printf("CONNEcted?? %d", connect);
+		//const std::vector<BWAPI::TilePosition> & closestToBuilding = MapTools::Instance().getClosestTilesTo(BWAPI::Position(inbetween));
+		//BWAPI::Broodwar->printf("amount of tiles near inbetween: %d", closestToBuilding.size());
+
+		Building c(b.type, inbetween);
+		c.buildCommandGiven = b.buildCommandGiven;
+		c.builderUnit = b.builderUnit;
+		c.buildingUnit = c.buildingUnit;
+		c.isGasSteal = b.isGasSteal;
+		
+		c.lastOrderFrame = b.lastOrderFrame;
+		c.underConstruction = b.underConstruction;
+		//return BuildingPlacer::Instance().getBuildLocationNear(c, distance, false);
+		return c.desiredPosition;
+	}
+
     if (b.isGasSteal)
     {
         BWTA::BaseLocation * enemyBaseLocation = InformationManager::Instance().getMainBaseLocation(BWAPI::Broodwar->enemy());
@@ -424,11 +494,37 @@ BWAPI::TilePosition BuildingManager::getBuildingLocation(const Building & b)
     if (b.type.isResourceDepot())
     {
         // get the location 
+
         BWAPI::TilePosition tile = MapTools::Instance().getNextExpansion();
 
         return tile;
     }
 
+	if (b.type == BWAPI::UnitTypes::Protoss_Photon_Cannon){
+	
+		Building pylon = PhotonPylons[0];
+		
+		BWTA::BaseLocation* base = InformationManager::Instance().getMainBaseLocation(BWAPI::Broodwar->self());
+		BWTA::Chokepoint* choke = BWTA::getNearestChokepoint(base->getTilePosition());
+		BWAPI::TilePosition chokeTile = BWAPI::TilePosition(choke->getCenter());
+		BWAPI::Broodwar->printf("choke x: %d y: %d", chokeTile.x, chokeTile.y);
+
+
+		BWAPI::TilePosition photonLocation = PhotonLocationFinder(pylon.desiredPosition, chokeTile);
+		BWAPI::Broodwar->printf("PHOTON LOCATION: X: %d , Y: %d", photonLocation.x , photonLocation.y);
+
+		Building c(b.type , photonLocation);
+		c.buildCommandGiven = b.buildCommandGiven;
+		c.builderUnit = b.builderUnit;
+		c.buildingUnit = c.buildingUnit;
+		c.isGasSteal = b.isGasSteal;
+
+		c.lastOrderFrame = b.lastOrderFrame;
+		c.underConstruction = b.underConstruction;
+
+
+		return BWAPI::Broodwar->getBuildLocation(c.type,c.desiredPosition);
+	}
     // set the building padding specifically
     int distance = b.type == BWAPI::UnitTypes::Protoss_Photon_Cannon ? 0 : Config::Macro::BuildingSpacing;
     if (b.type == BWAPI::UnitTypes::Protoss_Pylon && (numPylons < 3))
@@ -453,3 +549,37 @@ void BuildingManager::removeBuildings(const std::vector<Building> & toRemove)
     }
 }
 
+
+BWAPI::TilePosition BuildingManager::PhotonLocationFinder(BWAPI::TilePosition pylon , BWAPI::TilePosition ChokePoint){
+
+
+	int newX;
+	if (pylon.x > ChokePoint.x){
+
+		newX = pylon.x - ((pylon.x - ChokePoint.x) / 2);
+
+	}
+
+	else{
+
+		newX = pylon.x - ((pylon.x -ChokePoint.x) / 2);
+	}
+
+
+	int newY;
+
+	if (pylon.y > ChokePoint.y){
+
+		newY = pylon.y - ((pylon.y - ChokePoint.y) / 2);
+
+	}
+
+	else{
+
+		newY = pylon.y - ((pylon.y - ChokePoint.y) / 2);
+	}
+
+
+	return BWAPI::TilePosition(newX,newY);
+
+}

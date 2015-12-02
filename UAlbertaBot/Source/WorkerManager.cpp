@@ -1,7 +1,7 @@
 #include "Common.h"
 #include "WorkerManager.h"
 #include "Micro.h"
-
+#include "ProductionManager.h"
 using namespace UAlbertaBot;
 
 WorkerManager::WorkerManager() 
@@ -304,7 +304,7 @@ void WorkerManager::setMineralWorker(BWAPI::Unit unit)
 	}
 	else
 	{
-		// BWAPI::Broodwar->printf("No valid depot for mineral worker");
+		//BWAPI::Broodwar->printf("No valid depot for mineral worker");
 	}
 }
 

@@ -280,7 +280,7 @@ BWAPI::TilePosition MapTools::getNextExpansion(BWAPI::Player player)
                 continue;
             }
 
-            if (!closestBase || distanceFromHome < minDistance)
+            if (!closestBase || distanceFromHome > minDistance)
             {
                 closestBase = base;
                 minDistance = distanceFromHome;
