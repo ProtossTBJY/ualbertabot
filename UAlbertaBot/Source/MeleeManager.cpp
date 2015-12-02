@@ -1,5 +1,6 @@
 #include "MeleeManager.h"
 #include "UnitUtil.h"
+#include <vector>
 
 using namespace UAlbertaBot;
 
@@ -113,23 +114,43 @@ BWAPI::Unit MeleeManager::getTarget(BWAPI::Unit meleeUnit, const BWAPI::Unitset 
 {
 	
 	int highPriority = 0;
-	int lowest_hp = std::numeric_limits<int>::infinity();
-	BWAPI::Unit chosenTarget = nullptr;
+	double closestDist = std::numeric_limits<double>::infinity();
+	std::vector<BWAPI::Unit> weakestClosestTarget;
+	weakestClosestTarget.clear();
+	BWAPI::Unit weakestClosest = nullptr;
+	BWAPI::Unit closestTarget = nullptr;
+
 	// for each target possiblity
 	for (auto & unit : targets)
 	{
 		int priority = getAttackPriority(meleeUnit, unit);
-		int hp = unit->getHitPoints();
-		// if it's a higher priority, or it's weaker, set it
-		if (!chosenTarget || (priority > highPriority) || (priority == highPriority && hp < lowest_hp))
+		int distance = meleeUnit->getDistance(unit);
+
+		// if it's a higher priority, or it's closer, set it
+		if (!closestTarget || (priority > highPriority) || (priority == highPriority && distance <= closestDist))
 		{
-			lowest_hp = hp;
+			closestDist = distance;
 			highPriority = priority;
-			chosenTarget = unit;
+			closestTarget = unit;
+			if(!weakestClosestTarget.empty() && weakestClosestTarget[0]->getDistance(unit)!=closestDist){
+				weakestClosestTarget.clear();
+			}
+			weakestClosestTarget.push_back(unit);
 		}
 	}
-	//BWAPI::Broodwar->printf("%d %d",lowest_hp, chosenTarget->getHitPoints());
-	return chosenTarget;
+	
+	int lowest_hp = 10000;
+	if(!weakestClosestTarget.empty()){
+		for(size_t i=0; i<weakestClosestTarget.size(); i++){
+			int hp = weakestClosestTarget[i]->getHitPoints();
+			if(hp < lowest_hp){
+				weakestClosest =  weakestClosestTarget[i];
+				lowest_hp = hp;
+			}
+		}
+	}
+	BWAPI::Broodwar->printf("%d", weakestClosest->getHitPoints());
+	return weakestClosest;
 }
 
 	// get the attack priority of a type in relation to a zergling
