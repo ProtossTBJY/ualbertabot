@@ -20,3 +20,6 @@ BuildingManager.cpp:
     addBuildingTask(). function changed. 
     added function PhotonLocationFinder()
     
+StrategyManager.cpp:
+
+    getProtossBuildOrderGoal()
