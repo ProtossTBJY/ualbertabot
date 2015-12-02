@@ -16,7 +16,7 @@ RangedManager.cpp:
     getTarget() function changed
     
 BuildingManager.cpp:
+
     addBuildingTask(). function changed. 
-    
     added function PhotonLocationFinder()
     
