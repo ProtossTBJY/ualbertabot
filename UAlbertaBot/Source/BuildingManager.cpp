@@ -11,6 +11,7 @@ BuildingManager::BuildingManager()
     , _reservedGas(0)
 {
 	cannonsBuilt = 0;
+	pylonAmount = BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Protoss_Pylon);
 }
 
 // gets called every frame from GameCommander
@@ -280,16 +281,14 @@ bool BuildingManager::isEvolvedBuilding(BWAPI::UnitType type)
 void BuildingManager::addBuildingTask(BWAPI::UnitType type, BWAPI::TilePosition desiredLocation, bool isGasSteal)
 {
 
-    _reservedMinerals += type.mineralPrice();
-    _reservedGas	     += type.gasPrice();
+	_reservedMinerals += type.mineralPrice();
+	_reservedGas += type.gasPrice();
 
+	Building b(type, desiredLocation);
+	b.isGasSteal = isGasSteal;
+	b.status = BuildingStatus::Unassigned;
 
-
-    Building b(type, desiredLocation);
-    b.isGasSteal = isGasSteal;
-    b.status = BuildingStatus::Unassigned;
-
-    _buildings.push_back(b);
+	_buildings.push_back(b);
 }
 
 bool BuildingManager::isBuildingPositionExplored(const Building & b) const
