@@ -99,7 +99,41 @@ void ScoutManager::moveScouts()
     else if (_didGasSteal && finishedConstructingGasSteal)
     {
         _gasStealFinished = true;
-		//Micro::SmartMove(_workerScout, stealEnemyExpansion());
+		//stealEnemyExpansion();
+		Micro::SmartMove(_workerScout,stealEnemyExpansion());
+		_workerScout = nullptr;
+		std::set<BWTA::BaseLocation*> baseLocations = BWTA::getBaseLocations();
+
+		int dist_to_enemy_base = 1000000;
+
+		BWTA::BaseLocation* enemyBase = InformationManager::Instance().getMainBaseLocation(BWAPI::Broodwar->enemy());
+
+		BWTA::BaseLocation* bestBase;
+
+		for (auto &base : baseLocations){
+
+			if (base == InformationManager::Instance().getMainBaseLocation(BWAPI::Broodwar->enemy())){
+				//BWAPI::Broodwar->printf("I AM THE ENEMENY BASE");
+				enemyBase = base;
+
+			}
+			else{
+				//BWAPI::Broodwar->printf("I AM THE WALRUS");
+				if (enemyBase->getPosition().getApproxDistance(base->getPosition())<dist_to_enemy_base){
+
+					dist_to_enemy_base = enemyBase->getPosition().getApproxDistance(base->getPosition());
+					bestBase = base;
+
+				}
+
+			}
+
+
+		}//end for loop
+		const std::vector<BWAPI::TilePosition> & closestToBuilding = MapTools::Instance().getClosestTilesTo(bestBase->getPosition());
+		BWAPI::Broodwar->printf("amount of tiles near expansion base: %d", closestToBuilding.size() );
+		BuildingManager::Instance().addBuildingTask(BWAPI::UnitTypes::Protoss_Nexus, bestBase->getTilePosition(), false);
+
 
     }
     
@@ -582,6 +616,7 @@ BWAPI::Position ScoutManager::stealEnemyExpansion(){
 	
 	
 	}//end for loop
+	BWAPI::Position offsetFromBase = BWAPI::Position(bestBase->getPosition().x -4, bestBase->getPosition().y+3);
 	return  bestBase->getPosition();
 	//Micro::SmartMove(_workerScout, BWAPI::Position(bestBase->getTilePosition()));
 

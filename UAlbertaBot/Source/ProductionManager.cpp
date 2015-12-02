@@ -345,6 +345,7 @@ void ProductionManager::create(BWAPI::Unit producer, BuildOrderItem & item)
     {
 
 		BWAPI::TilePosition location = BWAPI::Broodwar->self()->getStartLocation();
+		
 
         // send the building task to the building manager
         BuildingManager::Instance().addBuildingTask(t.getUnitType(), location, item.isGasSteal);
