@@ -8,6 +8,9 @@ Please consider the code in this repository as unstable research code. Stable re
 
 #Modified Files:
 
+WorkerManager.cpp:
+    Attempted to add code to reassign idle mineral workers
+
 MeleeManger.cpp:
 
     getTarget() function changed, moveToFront() function added
